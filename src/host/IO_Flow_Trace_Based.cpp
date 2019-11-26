@@ -110,8 +110,15 @@ namespace Host_Components
 	{
 	}
 
-	void IO_Flow_Trace_Based::Execute_simulator_event(MQSimEngine::Sim_Event*)
+	void IO_Flow_Trace_Based::Execute_simulator_event(MQSimEngine::Sim_Event* event)
 	{
+#ifdef NEW_LOGGING
+		if (1 == event->Type)
+		{
+			IO_Flow_Base::Execute_simulator_event(event);
+			return;
+		}
+#endif		
 		Host_IO_Request* request = Generate_next_request();
 		if (request != NULL)
 			Submit_io_request(request);

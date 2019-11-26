@@ -17,8 +17,10 @@
 #include "SATA_HBA.h"
 #include "../utils/Workload_Statistics.h"
 
+#define NEW_LOGGING		
 namespace Host_Components
 {
+
 	struct NVMe_Queue_Pair
 	{
 		uint16_t Submission_queue_head;
@@ -33,6 +35,7 @@ namespace Host_Components
 		uint64_t Completion_queue_memory_base_address;
 	};
 
+	enum class Io_Event_Type {IO_EVENT = 0, IO_STAT = 1};
 #define NVME_SQ_FULL(Q) (Q.Submission_queue_tail < Q.Submission_queue_size - 1 ? Q.Submission_queue_tail + 1 == Q.Submission_queue_head : Q.Submission_queue_head == 0)
 #define NVME_UPDATE_SQ_TAIL(Q)  Q.Submission_queue_tail++;\
 						if (Q.Submission_queue_tail == Q.Submission_queue_size)\
@@ -48,7 +51,10 @@ namespace Host_Components
 			HostInterface_Types SSD_device_type, PCIe_Root_Complex* pcie_root_complex, SATA_HBA* sata_hba,
 			bool enabled_logging, sim_time_type logging_period, std::string logging_file_path);
 		~IO_Flow_Base();
-		void Start_simulation();
+		void Start_simulation();		
+#ifdef NEW_LOGGING
+		void Execute_simulator_event(MQSimEngine::Sim_Event*);
+#endif
 		IO_Flow_Priority_Class Priority_class() { return priority_class; }
 		virtual Host_IO_Request* Generate_next_request() = 0;
 		virtual void NVMe_consume_io_request(Completion_Queue_Entry*);
@@ -79,6 +85,11 @@ namespace Host_Components
 		LHA_type start_lsa_on_device, end_lsa_on_device;
 
 		void Submit_io_request(Host_IO_Request*);
+		void Logging_and_update();
+		bool Flow_completed();
+		void Io_request_stat(Host_IO_Request* request);
+		void Update_progress_bar();
+		int Calculate_progress();
 
 		//NVMe host-to-device communication variables
 		IO_Flow_Priority_Class priority_class;
@@ -96,27 +107,46 @@ namespace Host_Components
 		unsigned int STAT_generated_request_count, STAT_generated_read_request_count, STAT_generated_write_request_count;
 		unsigned int STAT_ignored_request_count;
 		unsigned int STAT_serviced_request_count, STAT_serviced_read_request_count, STAT_serviced_write_request_count;
+
+		//clat - time from I/O submitted into queue to completed entry received
 		sim_time_type STAT_sum_device_response_time, STAT_sum_device_response_time_read, STAT_sum_device_response_time_write;
 		sim_time_type STAT_min_device_response_time, STAT_min_device_response_time_read, STAT_min_device_response_time_write;
 		sim_time_type STAT_max_device_response_time, STAT_max_device_response_time_read, STAT_max_device_response_time_write;
+		//lat - time from I/O generated to completed entry received
 		sim_time_type STAT_sum_request_delay, STAT_sum_request_delay_read, STAT_sum_request_delay_write;
 		sim_time_type STAT_min_request_delay, STAT_min_request_delay_read, STAT_min_request_delay_write;
 		sim_time_type STAT_max_request_delay, STAT_max_request_delay_read, STAT_max_request_delay_write;
+		//slat - time from I/O generated to submitted into queue
+		sim_time_type STAT_sum_request_enqueued_delay, STAT_sum_request_enqueued_delay_read, STAT_sum_request_enqueued_delay_write;
+		sim_time_type STAT_min_request_enqueued_delay, STAT_min_request_enqueued_delay_read, STAT_min_request_enqueued_delay_write;
+		sim_time_type STAT_max_request_enqueued_delay, STAT_max_request_enqueued_delay_read, STAT_max_request_enqueued_delay_write;
+		
 		sim_time_type STAT_transferred_bytes_total, STAT_transferred_bytes_read, STAT_transferred_bytes_write;
 		int progress;
 		int next_progress_step = 0;
 
 		//Variables used to log response time changes
 		bool enabled_logging;
-		sim_time_type logging_period;
+		sim_time_type logging_period;	//ns
 		sim_time_type next_logging_milestone;
 		std::string logging_file_path;
 		std::ofstream log_file;
-		uint32_t Get_device_response_time_short_term();//in microseconds
-		uint32_t Get_end_to_end_request_delay_short_term();//in microseconds
-		sim_time_type STAT_sum_device_response_time_short_term, STAT_sum_request_delay_short_term;
-		unsigned int STAT_serviced_request_count_short_term;
-
+		uint32_t Get_device_read_response_time_short_term();//in microseconds
+		uint32_t Get_device_write_response_time_short_term();//in microseconds
+		uint32_t Get_end_to_end_read_request_delay_short_term();//in microseconds
+		uint32_t Get_end_to_end_write_request_delay_short_term();//in microseconds
+		uint32_t Get_read_request_enqueued_delay_short_term();//in microseconds
+		uint32_t Get_write_request_enqueued_delay_short_term();//in microseconds
+		uint32_t Get_serviced_read_request_count_short_term(){return STAT_serviced_read_request_count_short_term;}
+		uint32_t Get_serviced_write_request_count_short_term(){return STAT_serviced_write_request_count_short_term;}
+		uint32_t Get_transferred_kbs_read_short_term(){return STAT_sum_transferred_bytes_read_short_term / 1024 / ((double)logging_period / SIM_TIME_TO_SECONDS_COEFF);}
+		uint32_t Get_transferred_kbs_write_short_term(){return STAT_sum_transferred_bytes_write_short_term / 1024 / ((double)logging_period / SIM_TIME_TO_SECONDS_COEFF);}
+		
+		sim_time_type STAT_sum_device_read_response_time_short_term, STAT_sum_device_write_response_time_short_term; //clat
+		sim_time_type STAT_sum_read_request_delay_short_term, STAT_sum_write_request_delay_short_term;   //lat
+		sim_time_type STAT_sum_read_request_enqueued_delay_short_term,STAT_sum_write_request_enqueued_delay_short_term;//slat
+		uint32_t STAT_sum_transferred_bytes_read_short_term, STAT_sum_transferred_bytes_write_short_term;
+		unsigned int STAT_serviced_read_request_count_short_term,STAT_serviced_write_request_count_short_term;
 	};
 }
 

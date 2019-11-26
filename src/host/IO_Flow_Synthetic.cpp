@@ -199,6 +199,13 @@ namespace Host_Components
 
 	void IO_Flow_Synthetic::Execute_simulator_event(MQSimEngine::Sim_Event* event)
 	{
+#ifdef NEW_LOGGING
+		if (1 == event->Type)
+		{
+			IO_Flow_Base::Execute_simulator_event(event);
+			return;
+		}
+#endif		
 		if (generator_type == Utils::Request_Generator_Type::BANDWIDTH)
 		{
 			Host_IO_Request* req = Generate_next_request();
