@@ -136,18 +136,7 @@ namespace Host_Components
 		next_logging_milestone = logging_period;
 		if (enabled_logging)
 			log_file.open(logging_file_path, std::ofstream::out);
-		log_file << "SimulationTime(us)\t" 		\
-				 << "Rslat(us)\t" 	\
-				 << "Wslat(us)\t"	\
-				 << "Rlat(us)\t"	\
-				 << "Wlat(us)\t"		\
-				 << "Rclat(us)\t"		\
-				 << "Wclat(us)\t"		\
-				 << "RIOPS\t"		\
-				 << "WIOPS\t"		\
-				 << "RBW(KB/s)\t"		\
-				 << "WBW(KB/s)\t"		\		
-				 << std::endl;
+		log_file << "SimulationTime(ms)\t"<< "Rslat(us)\t"<< "Wslat(us)\t"<< "Rlat(us)\t"<< "Wlat(us)\t"<< "Rclat(us)\t"<< "Wclat(us)\t"<< "RIOPS\t"<< "WIOPS\t"<< "RBW(KB/s)\t"<< "WBW(KB/s)\t"<< std::endl;
 		STAT_sum_device_read_response_time_short_term = 0;
 		STAT_sum_device_write_response_time_short_term = 0;
 		STAT_sum_read_request_delay_short_term = 0;
@@ -159,21 +148,20 @@ namespace Host_Components
 		STAT_serviced_read_request_count_short_term = 0;
 		STAT_serviced_write_request_count_short_term = 0;
 #ifdef NEW_LOGGING		
-		//Simulator->Register_sim_event(next_logging_milestone, this, 0, (int)Io_Event_Type::IO_STAT);
-		Simulator->Register_sim_event(next_logging_milestone, this, 0, 1);
+		Simulator->Register_sim_event(next_logging_milestone, this, 0, (int)Io_Event_Type::IO_STAT);
 #endif		
 	}
 	
 #ifdef NEW_LOGGING
 	void IO_Flow_Base::Execute_simulator_event(MQSimEngine::Sim_Event*simEvent)
 	{
-		if (1 == simEvent->Type)
+		if ((int)Io_Event_Type::IO_STAT == simEvent->Type)
 		{
 	//		std::cout<<Io_Event_Type::IO_STAT<<Simulator->Time()<<std::endl;
 			Logging_and_update();
 			if (!Flow_completed())
 			{
-				Simulator->Register_sim_event(next_logging_milestone, this, 0, 1);
+				Simulator->Register_sim_event(next_logging_milestone, this, 0, (int)Io_Event_Type::IO_STAT);
 			}
 		}
 	}
@@ -412,17 +400,14 @@ namespace Host_Components
 
 	void IO_Flow_Base::Logging_and_update()
 	{
-		log_file << Simulator->Time() / SIM_TIME_TO_MICROSECONDS_COEFF << "\t\t\t" << 	\
-			Get_read_request_enqueued_delay_short_term() << "\t\t"<< 	\
-			Get_write_request_enqueued_delay_short_term() << "\t\t" << 	\
-			Get_end_to_end_read_request_delay_short_term() << "\t\t" << 	\
-			Get_end_to_end_write_request_delay_short_term()<< "\t\t"<<	\	
-			Get_device_read_response_time_short_term() << "\t\t"<< 		\
-			Get_device_write_response_time_short_term() << "\t\t" << 		\
-			Get_serviced_read_request_count_short_term() << "\t"<< 		\
-			Get_serviced_write_request_count_short_term() << "\t\t" << 		\
-			Get_transferred_kbs_read_short_term() << "\t\t"<< 		\
-			Get_transferred_kbs_write_short_term() << "\t\t" << 		\
+		log_file << Simulator->Time() / SIM_TIME_TO_MILLSECONDS_COEFF << "\t\t\t" <<Get_read_request_enqueued_delay_short_term() << "\t\t"<<Get_write_request_enqueued_delay_short_term() << "\t\t" <<Get_end_to_end_read_request_delay_short_term() << "\t\t" << 	\
+			Get_end_to_end_write_request_delay_short_term()<< "\t\t"<<	
+			Get_device_read_response_time_short_term() << "\t\t"<<
+			Get_device_write_response_time_short_term() << "\t\t" <<
+			Get_serviced_read_request_count_short_term() << "\t"<<
+			Get_serviced_write_request_count_short_term() << "\t\t" <<
+			Get_transferred_kbs_read_short_term() << "\t\t"<<
+			Get_transferred_kbs_write_short_term() << "\t\t" <<
 			std::endl;
 		STAT_sum_device_read_response_time_short_term = 0;
 		STAT_sum_device_write_response_time_short_term = 0;

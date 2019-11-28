@@ -10,11 +10,14 @@ namespace Host_Components
 	class PCIe_Message
 	{
 	public:
+		PCIe_Message();
+		~PCIe_Message();
 		PCIe_Destination_Type Destination;
 		PCIe_Message_Type Type;
 		void* Payload;
 		unsigned int Payload_size;
 		uint64_t Address;
+		static unsigned int objCount;
 	};
 }
 

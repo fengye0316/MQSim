@@ -23,12 +23,14 @@ namespace SSD_Components
 		NVM_Transaction_Flash_WR(Transaction_Source_Type source, stream_id_type stream_id,
 			unsigned int data_size_in_byte, LPA_type lpa, SSD_Components::User_Request* user_io_request, NVM::memory_content_type content,
 			page_status_type write_sectors_bitmap, data_timestamp_type data_timestamp);
+		~NVM_Transaction_Flash_WR();
 		NVM::memory_content_type Content; //The content of this transaction
 		NVM_Transaction_Flash_RD* RelatedRead; //If this write request must be preceded by a read (for partial page write), this variable is used to point to the corresponding read request
 		NVM_Transaction_Flash_ER* RelatedErase;
 		page_status_type write_sectors_bitmap;
 		data_timestamp_type DataTimeStamp;
 		WriteExecutionModeType ExecutionMode;
+		static unsigned int objCount;
 	};
 }
 

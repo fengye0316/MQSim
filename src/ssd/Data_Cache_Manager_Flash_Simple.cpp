@@ -193,6 +193,10 @@ namespace SSD_Components
 			read_transfer_info->Stream_id = user_request->Stream_id;
 			service_dram_access_request(read_transfer_info);
 		}
+		else
+		{
+			delete evicted_cache_slots;
+		}
 
 		if (dram_write_size_in_sectors)//Issue memory write to write data to DRAM
 		{

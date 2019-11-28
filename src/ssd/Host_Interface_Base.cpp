@@ -3,28 +3,25 @@
 
 namespace SSD_Components
 {
+	unsigned int Input_Stream_Base::objCount = 0;
 	Input_Stream_Base::Input_Stream_Base() :
 		STAT_number_of_read_requests(0), STAT_number_of_write_requests(0), 
 		STAT_number_of_read_transactions(0), STAT_number_of_write_transactions(0),
 		STAT_sum_of_read_transactions_execution_time(0), STAT_sum_of_read_transactions_transfer_time(0), STAT_sum_of_read_transactions_waiting_time(0),
 		STAT_sum_of_write_transactions_execution_time(0), STAT_sum_of_write_transactions_transfer_time(0), STAT_sum_of_write_transactions_waiting_time(0)
-	{}
+	{
+		DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
 	
-	Input_Stream_Manager_Base::~Input_Stream_Manager_Base()
+
+	Input_Stream_Base::~Input_Stream_Base() 
 	{
-		for (auto &stream : input_streams)
-			delete stream;
+		DEBUG_OBJ_DELOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
 	}
 
-	Input_Stream_Base::~Input_Stream_Base() {}
-
-	Request_Fetch_Unit_Base::~Request_Fetch_Unit_Base()
-	{
-		for (auto &dma_info : dma_list)
-			delete dma_info;
-	}
 
 	Host_Interface_Base* Host_Interface_Base::_my_instance = NULL;
+	unsigned int Host_Interface_Base::objCount = 0;
 
 	Host_Interface_Base::Host_Interface_Base(const sim_object_id_type& id, HostInterface_Types type, LHA_type max_logical_sector_address, unsigned int sectors_per_page, 
 		Data_Cache_Manager_Base* cache)
@@ -32,12 +29,14 @@ namespace SSD_Components
 		sectors_per_page(sectors_per_page), cache(cache)
 	{
 		_my_instance = this;
+		DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
 	}
 	
 	Host_Interface_Base::~Host_Interface_Base()
 	{
 		delete input_stream_manager;
 		delete request_fetch_unit;
+		DEBUG_OBJ_DELOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
 	}
 
 	void Host_Interface_Base::Setup_triggers()
@@ -81,10 +80,18 @@ namespace SSD_Components
 		return sectors_per_page;
 	}
 
-
+	unsigned int Input_Stream_Manager_Base::objCount = 0;
 	Input_Stream_Manager_Base::Input_Stream_Manager_Base(Host_Interface_Base* host_interface) :
 		host_interface(host_interface)
-	{}
+	{
+		DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
+	Input_Stream_Manager_Base::~Input_Stream_Manager_Base()
+	{
+		DEBUG_OBJ_DELOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+		for (auto &stream : input_streams)
+			delete stream;
+	}
 	void Input_Stream_Manager_Base::Update_transaction_statistics(NVM_Transaction* transaction)
 	{
 		switch (transaction->Type)
@@ -155,8 +162,17 @@ namespace SSD_Components
 	}
 
 	
+	unsigned int Request_Fetch_Unit_Base::objCount = 0;
 	Request_Fetch_Unit_Base::Request_Fetch_Unit_Base(Host_Interface_Base* host_interface) :
 		host_interface(host_interface)
-	{}
+	{
+		DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
+	Request_Fetch_Unit_Base::~Request_Fetch_Unit_Base()
+	{
+		DEBUG_OBJ_DELOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+		for (auto &dma_info : dma_list)
+			delete dma_info;
+	}
 
 }

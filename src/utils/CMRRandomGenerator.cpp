@@ -1,7 +1,9 @@
 #include "CMRRandomGenerator.h"
+#include "../sim/Sim_Defs.h"
 
 namespace Utils
 {
+	unsigned int CMRRandomGenerator::objCount = 0;
 	double CMRRandomGenerator::norm = 2.328306549295728e-10;
 	double CMRRandomGenerator::m1 = 4294967087.0;
 	double CMRRandomGenerator::m2 = 4294944443.0;
@@ -22,8 +24,13 @@ namespace Utils
 			for (int j = 0; j <= 2; j++)
 				s[i][j] = init_s[i][j];
 		Advance(n, e);
+		DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
 	}
 
+	CMRRandomGenerator::~CMRRandomGenerator()
+	{
+		DEBUG_OBJ_DELOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
 	void CMRRandomGenerator::Advance(int64_t n, int32_t e)
 	{
 		int64_t B[2][3][3];

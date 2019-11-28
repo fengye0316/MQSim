@@ -14,6 +14,10 @@ namespace MQSimEngine
 		{
 			_id = id;
 			_triggersSetUp = false;
+			DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+		}
+		virtual ~Sim_Object(){
+			DEBUG_OBJ_DELOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
 		}
 		sim_object_id_type ID()
 		{
@@ -38,6 +42,7 @@ namespace MQSimEngine
 		virtual void Execute_simulator_event(Sim_Event*) = 0;
 		 
 	private:
+		static unsigned int objCount;
 		sim_object_id_type _id;
 		bool _triggersSetUp;
 	};

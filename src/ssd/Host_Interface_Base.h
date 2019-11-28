@@ -40,6 +40,7 @@ namespace SSD_Components
 		unsigned int STAT_number_of_write_transactions;
 		sim_time_type STAT_sum_of_read_transactions_execution_time, STAT_sum_of_read_transactions_transfer_time, STAT_sum_of_read_transactions_waiting_time;
 		sim_time_type STAT_sum_of_write_transactions_execution_time, STAT_sum_of_write_transactions_transfer_time, STAT_sum_of_write_transactions_waiting_time;
+		static unsigned int objCount;
 	};
 
 	class Input_Stream_Manager_Base
@@ -66,6 +67,7 @@ namespace SSD_Components
 		Host_Interface_Base* host_interface;
 		virtual void segment_user_request(User_Request* user_request) = 0;
 		std::vector<Input_Stream_Base*> input_streams;
+		static unsigned int objCount;
 	};
 
 	class Request_Fetch_Unit_Base
@@ -87,6 +89,7 @@ namespace SSD_Components
 		};
 		Host_Interface_Base* host_interface;
 		std::list<DMA_Req_Item*> dma_list;
+		static unsigned int objCount;
 	};
 
 	class Host_Interface_Base : public MQSimEngine::Sim_Object, public MQSimEngine::Sim_Reporter
@@ -153,6 +156,7 @@ namespace SSD_Components
 		}
 	private:
 		Host_Components::PCIe_Switch* pcie_switch;
+		static unsigned int objCount;
 	};
 }
 #endif //HOST_INTERFACE_BASE_H

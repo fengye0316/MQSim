@@ -16,6 +16,7 @@ namespace SSD_Components
 	{
 	public:
 		User_Request();
+		~User_Request(){DEBUG_OBJ_DELOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);}
 		IO_Flow_Priority_Class Priority_class;
 		io_request_id_type ID;
 		LHA_type Start_LBA;
@@ -34,6 +35,7 @@ namespace SSD_Components
 		void* Data;
 	private:
 		static unsigned int lastId;
+		static unsigned int objCount;
 	};
 }
 

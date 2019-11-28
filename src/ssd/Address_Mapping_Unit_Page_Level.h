@@ -18,25 +18,41 @@ namespace SSD_Components
 
 	enum class CMTEntryStatus {FREE, WAITING, VALID};
 
-	struct GTDEntryType //Entry type for the Global Translation Directory
+	class GTDEntryType //Entry type for the Global Translation Directory
 	{
+	public:
+		GTDEntryType();
+		~GTDEntryType();
 		MPPN_type MPPN;
 		data_timestamp_type TimeStamp;
+	private:
+		static unsigned int objCount;
 	};
-	struct CMTSlotType
+	class CMTSlotType
 	{
+	public:
+		CMTSlotType();
+		CMTSlotType(const CMTSlotType& type);
+		~CMTSlotType();
 		PPA_type PPA;
 		unsigned long long WrittenStateBitmap;
 		bool Dirty;
 		CMTEntryStatus Status;
 		std::list<std::pair<LPA_type, CMTSlotType*>>::iterator listPtr;//used for fast implementation of LRU
 		stream_id_type Stream_id;
+	private:
+		static unsigned int objCount;
 	};
-	struct GMTEntryType//Entry type for the Global Mapping Table
+	class GMTEntryType//Entry type for the Global Mapping Table
 	{
+	public:
+		GMTEntryType();
+		~GMTEntryType();
 		PPA_type PPA;
 		uint64_t WrittenStateBitmap;
 		data_timestamp_type TimeStamp;
+	private:
+		static unsigned int objCount;
 	};
 	
 	class Cached_Mapping_Table

@@ -113,7 +113,7 @@ namespace Host_Components
 	void IO_Flow_Trace_Based::Execute_simulator_event(MQSimEngine::Sim_Event* event)
 	{
 #ifdef NEW_LOGGING
-		if (1 == event->Type)
+		if ((int)Io_Event_Type::IO_STAT == event->Type)
 		{
 			IO_Flow_Base::Execute_simulator_event(event);
 			return;

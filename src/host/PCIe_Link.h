@@ -39,8 +39,11 @@ namespace Host_Components
 		//sim_time_type byte_transfer_delay_per_lane;//Since the transfer delay of one byte may take lower than one nano-second, we use 8-byte metric 
 		int packet_overhead;
 		std::queue<PCIe_Message*> Message_buffer_toward_ssd_device;
+		// this not consider PCIe Message priority, that is for a PCIe_Message, it's divided into several TLPs.
+		// TLPs from different PCIe_Message may be scheduled.
 		sim_time_type estimate_transfer_time(PCIe_Message* message)
 		{
+			sim_time_type transfer_time;
 			switch (message->Type)
 			{
 			case PCIe_Message_Type::READ_COMP:
@@ -48,10 +51,13 @@ namespace Host_Components
 			{
 				int total_transfered_bytes = (message->Payload_size / tlp_max_payload_size) * (tlp_max_payload_size + packet_overhead)
 					+ (message->Payload_size % tlp_max_payload_size == 0 ? 0 : message->Payload_size % tlp_max_payload_size + packet_overhead);
-				return (sim_time_type)(((double)((total_transfered_bytes / lane_count) + (total_transfered_bytes % lane_count == 0 ? 0 : 1))) / lane_bandwidth_GBPs);
+				transfer_time = (sim_time_type)(((double)((total_transfered_bytes / lane_count) + (total_transfered_bytes % lane_count == 0 ? 0 : 1))) / lane_bandwidth_GBPs);
+				//std::cout<<"bytes:"<<total_transfered_bytes<<"\ttime:"<<transfer_time<<std::endl;
+				return transfer_time;
 			}
 			case PCIe_Message_Type::READ_REQ:
-				return (sim_time_type)((((packet_overhead + 4) / lane_count) + ((packet_overhead + 4) % lane_count == 0 ? 0 : 1)) / lane_bandwidth_GBPs);
+				transfer_time = (sim_time_type)((((packet_overhead + 4) / lane_count) + ((packet_overhead + 4) % lane_count == 0 ? 0 : 1)) / lane_bandwidth_GBPs);
+				return transfer_time;
 			}
 			return 0;
 		}

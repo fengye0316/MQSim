@@ -3,7 +3,7 @@
 
 namespace SSD_Components
 {
-	unsigned int Block_Pool_Slot_Type::Page_vector_size = 0;
+	unsigned int Flash_Block_Manager_Base::objCount = 0;
 	Flash_Block_Manager_Base::Flash_Block_Manager_Base(GC_and_WL_Unit_Base* gc_and_wl_unit, unsigned int max_allowed_block_erase_count, unsigned int total_concurrent_streams_no,
 		unsigned int channel_count, unsigned int chip_no_per_channel, unsigned int die_no_per_chip, unsigned int plane_no_per_die,
 		unsigned int block_no_per_plane, unsigned int page_no_per_block)
@@ -11,6 +11,7 @@ namespace SSD_Components
 		channel_count(channel_count), chip_no_per_channel(chip_no_per_channel), die_no_per_chip(die_no_per_chip), plane_no_per_die(plane_no_per_die),
 		block_no_per_plane(block_no_per_plane), pages_no_per_block(page_no_per_block)
 	{
+		DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
 		plane_manager = new PlaneBookKeepingType***[channel_count];
 		for (unsigned int channelID = 0; channelID < channel_count; channelID++)
 		{
@@ -86,10 +87,15 @@ namespace SSD_Components
 			delete[] plane_manager[channel_id];
 		}
 		delete[] plane_manager;
+
+		DEBUG_OBJ_DELOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+		
 	}
 
 	void Flash_Block_Manager_Base::Set_GC_and_WL_Unit(GC_and_WL_Unit_Base* gcwl) { this->gc_and_wl_unit = gcwl; }
 
+	unsigned int Block_Pool_Slot_Type::objCount = 0;
+	unsigned int Block_Pool_Slot_Type::Page_vector_size = 0;
 	void Block_Pool_Slot_Type::Erase()
 	{
 		Current_page_write_index = 0;
@@ -102,6 +108,7 @@ namespace SSD_Components
 		Erase_transaction = NULL;
 	}
 
+	unsigned int PlaneBookKeepingType::objCount = 0;
 	Block_Pool_Slot_Type* PlaneBookKeepingType::Get_a_free_block(stream_id_type stream_id, bool for_mapping_data)
 	{
 		Block_Pool_Slot_Type* new_block = NULL;
@@ -167,7 +174,7 @@ namespace SSD_Components
 
 		for (unsigned int i = 1; i < block_no_per_plane; i++)
 		{
-			if (plane_record->Blocks[i].Erase_count < plane_record->Blocks[i].Erase_count)
+			if (plane_record->Blocks[i].Erase_count < plane_record->Blocks[min_erased_block].Erase_count)
 				min_erased_block = i;
 		}
 		return min_erased_block;

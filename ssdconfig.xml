@@ -19,8 +19,8 @@
 			 <Data_Cache_Sharing_Mode>SHARED</Data_Cache_Sharing_Mode>
 			 <Data_Cache_Capacity>268435456</Data_Cache_Capacity>
 			 <Data_Cache_DRAM_Row_Size>8192</Data_Cache_DRAM_Row_Size>
-			 <Data_Cache_DRAM_Data_Rate>100</Data_Cache_DRAM_Data_Rate>
-			 <Data_Cache_DRAM_Data_Busrt_Size>1</Data_Cache_DRAM_Data_Busrt_Size>
+			 <Data_Cache_DRAM_Data_Rate>800</Data_Cache_DRAM_Data_Rate>
+			 <Data_Cache_DRAM_Data_Busrt_Size>4</Data_Cache_DRAM_Data_Busrt_Size>
 			 <Data_Cache_DRAM_tRCD>13</Data_Cache_DRAM_tRCD>
 			 <Data_Cache_DRAM_tCL>13</Data_Cache_DRAM_tCL>
 			 <Data_Cache_DRAM_tRP>13</Data_Cache_DRAM_tRP>

@@ -3,6 +3,7 @@
 
 namespace SSD_Components
 {
+	unsigned int Data_Cache_Manager_Base::objCount = 0;
 	Data_Cache_Manager_Base* Data_Cache_Manager_Base::_my_instance = NULL;
 	Caching_Mode* Data_Cache_Manager_Base::caching_mode_per_input_stream;
 
@@ -13,6 +14,7 @@ namespace SSD_Components
 		dram_row_size(dram_row_size), dram_data_rate(dram_data_rate), dram_busrt_size(dram_busrt_size), dram_tRCD(dram_tRCD), dram_tCL(dram_tCL), dram_tRP(dram_tRP),
 		sharing_mode(sharing_mode), stream_count(stream_count)
 	{
+		DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
 		_my_instance = this;
 		dram_burst_transfer_time_ddr = (double) ONE_SECOND / (dram_data_rate * 1000 * 1000);
 		this->caching_mode_per_input_stream = new Caching_Mode[stream_count];
@@ -20,7 +22,10 @@ namespace SSD_Components
 			this->caching_mode_per_input_stream[i] = caching_mode_per_input_stream[i];
 	}
 
-	Data_Cache_Manager_Base::~Data_Cache_Manager_Base() {}
+	Data_Cache_Manager_Base::~Data_Cache_Manager_Base() 
+	{
+		DEBUG_OBJ_DELOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
 
 	void Data_Cache_Manager_Base::Setup_triggers()
 	{

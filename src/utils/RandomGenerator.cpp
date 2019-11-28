@@ -1,14 +1,23 @@
 #include "RandomGenerator.h"
 #include <math.h>
 #include <stdexcept>
+#include "../sim/Sim_Defs.h"
 
 namespace Utils
 {
+	unsigned int RandomGenerator::objCount = 0;
 	RandomGenerator::RandomGenerator(int seed)
 	{
 		rand = new CMRRandomGenerator(seed / 200 + 1, seed % 200);
+		DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
 	}
 
+	RandomGenerator::~RandomGenerator()
+	{
+		delete rand;
+		DEBUG_OBJ_DELOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
+	
 	uint32_t RandomGenerator::Get_uint(uint32_t maxValue)
 	{
 		uint32_t v = (uint32_t)(FloatRandom() * (maxValue + 1));

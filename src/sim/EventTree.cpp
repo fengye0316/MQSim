@@ -6,6 +6,8 @@ namespace MQSimEngine
 {
 	class Engine;
 
+	unsigned int Sim_Event::objCount = 0;
+	unsigned int Sim_Object::objCount = 0;
 	EventTreeNode* EventTree::SentinelNode = NULL;
 
 	EventTree::EventTree()

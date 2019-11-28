@@ -147,6 +147,7 @@ namespace Utils
 		{
 			start_lhas_per_flow.push_back(total_lha_no);
 			end_lhas_per_flow.push_back(total_lha_no + lsa_count_per_stream[stream_id] - 1);
+			PRINT_MESSAGE("Stream Id:"<<stream_id<<"\tstart host address:"<<total_lha_no<<"\tend host address:"<<(total_lha_no + lsa_count_per_stream[stream_id] - 1))
 			total_lha_no += lsa_count_per_stream[stream_id];
 		}
 

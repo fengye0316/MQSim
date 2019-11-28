@@ -8,6 +8,47 @@
 
 namespace SSD_Components
 {
+	unsigned int GTDEntryType::objCount = 0;
+	GTDEntryType::GTDEntryType()
+	{
+		DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
+	GTDEntryType::~GTDEntryType()
+	{
+		DEBUG_OBJ_DELOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
+
+	unsigned int CMTSlotType::objCount = 0;
+	CMTSlotType::CMTSlotType()
+	{
+		DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
+	CMTSlotType::CMTSlotType(const CMTSlotType& type)
+	{
+		PPA = type.PPA;
+		WrittenStateBitmap = type.WrittenStateBitmap;
+		Dirty = type.Dirty;
+		Status = type.Status;
+		listPtr = type.listPtr;//used for fast implementation of LRU
+		Stream_id = type.Stream_id;
+		DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
+
+	CMTSlotType::~CMTSlotType()
+	{
+		DEBUG_OBJ_DELOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
+
+	unsigned int GMTEntryType::objCount = 0;
+	GMTEntryType::GMTEntryType()
+	{
+		DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
+
+	GMTEntryType::~GMTEntryType()
+	{
+		DEBUG_OBJ_DELOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
 	Cached_Mapping_Table::Cached_Mapping_Table(unsigned int capacity) : capacity(capacity)
 	{}
 
@@ -194,6 +235,7 @@ namespace SSD_Components
 	}
 	AddressMappingDomain::~AddressMappingDomain()
 	{
+		// for shared entire CMT, this may be a risk for multiple delete
 		delete CMT;
 		delete[] GlobalMappingTable;
 		delete[] GlobalTranslationDirectory;

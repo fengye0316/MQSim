@@ -9,6 +9,7 @@ namespace Utils
 	{
 		public:
 			CMRRandomGenerator(int64_t n, int e);
+			~CMRRandomGenerator();
 			void Advance(int64_t n, int e);
 			double NextDouble();
 		private:
@@ -103,6 +104,7 @@ namespace Utils
 				}
 				m_copy(d, c);
 			}
+			static unsigned int objCount;
 	};
 }
 

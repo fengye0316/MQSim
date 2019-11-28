@@ -358,6 +358,7 @@ namespace SSD_Components {
 			chipBKE->No_of_active_dies++;
 			if (chipBKE->OngoingDieCMDTransfers.size() > 0)
 			{
+				// if ftl not constrait transaction pushed to TSU, this issue not ok
 				perform_interleaved_cmd_data_transfer(targetChip, chipBKE->OngoingDieCMDTransfers.front());
 				return;
 			}

@@ -2,6 +2,7 @@
 
 namespace SSD_Components
 {
+	unsigned int GC_and_WL_Unit_Base::objCount = 0;
 	GC_and_WL_Unit_Base* GC_and_WL_Unit_Base::_my_instance;
 	
 	GC_and_WL_Unit_Base::GC_and_WL_Unit_Base(const sim_object_id_type& id,
@@ -28,6 +29,13 @@ namespace SSD_Components
 		random_pp_threshold = (unsigned int)(rho * pages_no_per_block);
 		if (block_pool_gc_threshold < max_ongoing_gc_reqs_per_plane)
 			block_pool_gc_threshold = max_ongoing_gc_reqs_per_plane;
+
+		DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
+
+	GC_and_WL_Unit_Base::~GC_and_WL_Unit_Base()
+	{
+		DEBUG_OBJ_DELOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
 	}
 
 	void GC_and_WL_Unit_Base::Setup_triggers()
@@ -56,6 +64,8 @@ namespace SSD_Components
 			default:
 				PRINT_ERROR("Unexpected situation in the GC_and_WL_Unit_Base function!")
 			}
+			// for FW in SoC, it will not run GC like this here. it may be a single thread to run GC folding, and control strategy
+			// to dispatch transaction to back end.
 			if (_my_instance->block_manager->Block_has_ongoing_gc_wl(transaction->Address))
 				if (_my_instance->block_manager->Can_execute_gc_wl(transaction->Address))
 				{

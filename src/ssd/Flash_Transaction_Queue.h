@@ -14,6 +14,7 @@ namespace SSD_Components
 	public:
 		Flash_Transaction_Queue();
 		Flash_Transaction_Queue(std::string id);
+		~Flash_Transaction_Queue();
 		void Set_id(std::string id);
 		void push_back(NVM_Transaction_Flash* const&);
 		void push_front(NVM_Transaction_Flash* const&);
@@ -25,6 +26,7 @@ namespace SSD_Components
 	private:
 		std::string id;
 		Queue_Probe RequestQueueProbe;
+		static unsigned int objCount;
 	};
 }
 

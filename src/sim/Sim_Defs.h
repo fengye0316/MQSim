@@ -4,6 +4,7 @@
 #include<cstdint>
 #include<string>
 #include<iostream>
+//#include <typeinfo.h>
 
 typedef uint64_t sim_time_type;
 typedef uint16_t stream_id_type;
@@ -27,5 +28,19 @@ typedef std::string sim_object_id_type;
 #define DEBUG(M) //std::cout<<M<<std::endl;
 #define DEBUG2(M) //std::cout<<M<<std::endl;
 #define SIM_TIME_TO_MICROSECONDS_COEFF 1000
+#define SIM_TIME_TO_MILLSECONDS_COEFF 1000000
 #define SIM_TIME_TO_SECONDS_COEFF 1000000000
+#define OBJ_MOD_DEFAULT		1000
+#define DEBUG_OBJ(M)	//	std::cout<<M<<std::endl;
+#define DEBUG_OBJ_ALLOC(OBJ,count, mod)	{\
+									count++;	\
+									if (((count) % (mod) == 0) && ((count) > 0))	\
+									{	\
+										DEBUG_OBJ(OBJ<<":"<<count)	\
+									}	\
+								}
+#define DEBUG_OBJ_DELOC(OBJ,count, mod)	{\
+									if (0 == count)	{DEBUG_OBJ(OBJ<<":dealloc error")}	\
+									count--;	\
+								}
 #endif // !DEFINITIONS_H

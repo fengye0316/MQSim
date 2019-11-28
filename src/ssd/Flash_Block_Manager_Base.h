@@ -28,6 +28,9 @@ namespace SSD_Components
 	class Block_Pool_Slot_Type
 	{
 	public:
+		Block_Pool_Slot_Type(){DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);}
+		~Block_Pool_Slot_Type(){DEBUG_OBJ_DELOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);}
+		static unsigned int objCount;
 		flash_block_ID_type BlockID;
 		flash_page_ID_type Current_page_write_index;
 		Block_Service_Status Current_status;
@@ -48,6 +51,9 @@ namespace SSD_Components
 	class PlaneBookKeepingType
 	{
 	public:
+		PlaneBookKeepingType(){DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);}
+		~PlaneBookKeepingType(){DEBUG_OBJ_DELOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);}
+		static unsigned int objCount;
 		unsigned int Total_pages_count;
 		unsigned int Free_pages_count;
 		unsigned int Valid_pages_count;
@@ -96,6 +102,7 @@ namespace SSD_Components
 		bool Is_having_ongoing_program(const NVM::FlashMemory::Physical_Page_Address& block_address);//Cheks if block has any ongoing program request
 		bool Is_page_valid(Block_Pool_Slot_Type* block, flash_page_ID_type page_id);//Make the page invalid in the block bookkeeping record
 	protected:
+		static unsigned int objCount;
 		PlaneBookKeepingType ****plane_manager;//Keeps track of plane block usage information
 		GC_and_WL_Unit_Base *gc_and_wl_unit;
 		unsigned int max_allowed_block_erase_count;

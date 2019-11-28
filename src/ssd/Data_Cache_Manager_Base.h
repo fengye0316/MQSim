@@ -38,6 +38,7 @@ namespace SSD_Components
 		void Set_host_interface(Host_Interface_Base* host_interface);
 		virtual void Do_warmup(std::vector<Utils::Workload_Statistics*> workload_stats) = 0;
 	protected:
+		static unsigned int objCount;
 		static Data_Cache_Manager_Base* _my_instance;
 		Host_Interface_Base* host_interface;
 		NVM_Firmware* nvm_firmware;
@@ -63,6 +64,7 @@ namespace SSD_Components
 	};
 
 
+	// consider dram page align case
 	inline sim_time_type estimate_dram_access_time(const unsigned int memory_access_size_in_byte,
 		const unsigned int dram_row_size, const unsigned int dram_burst_size_in_bytes, const double dram_burst_transfer_time_ddr,
 		const sim_time_type tRCD, const sim_time_type tCL, const sim_time_type tRP)

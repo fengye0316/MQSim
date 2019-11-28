@@ -23,10 +23,12 @@ namespace SSD_Components
 			unsigned int data_size_in_byte, LPA_type lpa, PPA_type ppa,
 			SSD_Components::User_Request* related_user_IO_request, NVM::memory_content_type content,
 			page_status_type read_sectors_bitmap, data_timestamp_type data_timestamp);
+		~NVM_Transaction_Flash_RD();
 		NVM::memory_content_type Content; //The content of this transaction
 		NVM_Transaction_Flash_WR* RelatedWrite;		//Is this read request related to another write request and provides update data (for partial page write)
 		page_status_type read_sectors_bitmap;
 		data_timestamp_type DataTimeStamp;
+		static unsigned int objCount;
 	};
 }
 

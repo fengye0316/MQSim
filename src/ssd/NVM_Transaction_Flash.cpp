@@ -14,5 +14,13 @@ namespace SSD_Components
 		unsigned int data_size_in_byte, LPA_type lpa, PPA_type ppa, const NVM::FlashMemory::Physical_Page_Address& address, User_Request* user_request) :
 		NVM_Transaction(stream_id, source, type, user_request), Data_and_metadata_size_in_byte(data_size_in_byte), LPA(lpa), PPA(ppa), Address(address), Physical_address_determined(false)
 
-	{}
+	{
+	}
+	NVM_Transaction_Flash::~NVM_Transaction_Flash()
+	{
+	}
+	NVM_Transaction::~NVM_Transaction()
+	{
+	}
+
 }

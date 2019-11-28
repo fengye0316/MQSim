@@ -44,6 +44,7 @@ namespace SSD_Components
 			unsigned int block_no_per_plane, unsigned int page_no_per_block, unsigned int sector_no_per_page,
 			bool use_copyback, double rho, unsigned int max_ongoing_gc_reqs_per_plane,
 			bool dynamic_wearleveling_enabled, bool static_wearleveling_enabled, unsigned int static_wearleveling_threshold, int seed);
+		virtual ~GC_and_WL_Unit_Base();
 		void Setup_triggers();
 		void Start_simulation();
 		void Validate_simulation_config();
@@ -95,6 +96,8 @@ namespace SSD_Components
 		unsigned int block_no_per_plane;
 		unsigned int pages_no_per_block;
 		unsigned int sector_no_per_page;
+
+		static unsigned int objCount;
 	};
 }
 

@@ -2,12 +2,20 @@
 
 namespace SSD_Components
 {
-	Flash_Transaction_Queue::Flash_Transaction_Queue() {}
+	unsigned int Flash_Transaction_Queue::objCount = 0;
+	Flash_Transaction_Queue::Flash_Transaction_Queue() {
+		DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
 
 	Flash_Transaction_Queue::Flash_Transaction_Queue(std::string id) : id(id)
 	{
+		DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
 	}
 
+	Flash_Transaction_Queue::~Flash_Transaction_Queue()
+	{
+		DEBUG_OBJ_DELOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
 	void Flash_Transaction_Queue::Set_id(std::string id)
 	{
 		this->id = id;

@@ -4,7 +4,42 @@
 
 namespace SSD_Components
 {
-	Data_Cache_Flash::Data_Cache_Flash(unsigned int capacity_in_pages) : capacity_in_pages(capacity_in_pages) {}
+	unsigned int Data_Cache_Slot_Type::objCount = 0;
+ 	Data_Cache_Slot_Type::Data_Cache_Slot_Type()
+	{		
+		DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
+
+	Data_Cache_Slot_Type::Data_Cache_Slot_Type(const Data_Cache_Slot_Type& slotType)
+ 	{
+		State_bitmap_of_existing_sectors = slotType.State_bitmap_of_existing_sectors;
+		LPA = slotType.LPA;
+		Content = slotType.Content;
+		Timestamp = slotType.Timestamp;
+		Status = slotType.Status;
+		lru_list_ptr = slotType.lru_list_ptr;//used for fast implementation of LRU
+		DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
+	Data_Cache_Slot_Type::~Data_Cache_Slot_Type()
+	{
+		DEBUG_OBJ_DELOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
+
+	unsigned int Memory_Transfer_Info::objCount = 0;
+	Memory_Transfer_Info::Memory_Transfer_Info()
+	{
+		DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
+	Memory_Transfer_Info::~Memory_Transfer_Info()
+	{
+		DEBUG_OBJ_DELOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
+	
+	unsigned int Data_Cache_Flash::objCount = 0;
+	Data_Cache_Flash::Data_Cache_Flash(unsigned int capacity_in_pages) : capacity_in_pages(capacity_in_pages) 
+	{
+		DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
 	bool Data_Cache_Flash::Exists(const stream_id_type stream_id, const LPA_type lpn)
 	{
 		LPA_type key = LPN_TO_UNIQUE_KEY(stream_id, lpn);
@@ -15,6 +50,7 @@ namespace SSD_Components
 	}
 	Data_Cache_Flash::~Data_Cache_Flash()
 	{
+		DEBUG_OBJ_DELOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
 		for (auto &slot : slots)
 			delete slot.second;
 	}

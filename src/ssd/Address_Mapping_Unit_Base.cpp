@@ -5,7 +5,7 @@
 
 namespace SSD_Components
 {
-
+	unsigned int Address_Mapping_Unit_Base::objCount = 0;
 	Address_Mapping_Unit_Base::Address_Mapping_Unit_Base(const sim_object_id_type& id, FTL* ftl, NVM_PHY_ONFI* flash_controller, Flash_Block_Manager_Base* block_manager,
 		bool ideal_mapping_table, unsigned int no_of_input_streams,
 		unsigned int ChannelCount, unsigned int chip_no_per_channel, unsigned int DieNoPerChip, unsigned int PlaneNoPerDie,
@@ -25,9 +25,13 @@ namespace SSD_Components
 		total_physical_pages_no = page_no_per_channel * ChannelCount;
 		total_logical_pages_no = (unsigned int)((double)total_physical_pages_no * (1 - overprovisioning_ratio));
 		max_logical_sector_address = (LHA_type)(SectorsPerPage * total_logical_pages_no - 1);
+		DEBUG_OBJ_ALLOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
 	}
 
-	Address_Mapping_Unit_Base::~Address_Mapping_Unit_Base() {}
+	Address_Mapping_Unit_Base::~Address_Mapping_Unit_Base() 
+	{
+		DEBUG_OBJ_DELOC(typeid(*this).name(), objCount, OBJ_MOD_DEFAULT);
+	}
 
 	unsigned int Address_Mapping_Unit_Base::Get_device_physical_pages_count()
 	{

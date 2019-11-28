@@ -12,14 +12,19 @@
 namespace SSD_Components
 {
 	enum class Cache_Slot_Status { EMPTY, CLEAN, DIRTY_NO_FLASH_WRITEBACK, DIRTY_FLASH_WRITEBACK };
-	struct Data_Cache_Slot_Type
+	class Data_Cache_Slot_Type
 	{
+	public:
+		Data_Cache_Slot_Type();
+		Data_Cache_Slot_Type(const Data_Cache_Slot_Type& slot_type);
+		~Data_Cache_Slot_Type();
 		unsigned long long State_bitmap_of_existing_sectors;
 		LPA_type LPA;
 		data_cache_content_type Content;
 		data_timestamp_type Timestamp;
 		Cache_Slot_Status Status;
 		std::list<std::pair<LPA_type, Data_Cache_Slot_Type*>>::iterator lru_list_ptr;//used for fast implementation of LRU
+		static unsigned int objCount;
 	};
 	enum class Data_Cache_Simulation_Event_Type {
 		MEMORY_READ_FOR_CACHE_EVICTION_FINISHED,
@@ -28,12 +33,16 @@ namespace SSD_Components
 		MEMORY_WRITE_FOR_USERIO_FINISHED
 	};
 
-	struct Memory_Transfer_Info
+	class Memory_Transfer_Info
 	{
+	public:
+		Memory_Transfer_Info();
+		~Memory_Transfer_Info();
 		unsigned int Size_in_bytes;
 		void* Related_request;
 		Data_Cache_Simulation_Event_Type next_event_type;
 		stream_id_type Stream_id;
+		static unsigned int objCount;
 	};
 
 	class Data_Cache_Flash
@@ -58,6 +67,8 @@ namespace SSD_Components
 		std::unordered_map<LPA_type, Data_Cache_Slot_Type*> slots;
 		std::list<std::pair<LPA_type, Data_Cache_Slot_Type*>> lru_list;
 		unsigned int capacity_in_pages;
+
+		static unsigned int objCount;
 	};
 }
 

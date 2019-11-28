@@ -200,7 +200,7 @@ namespace Host_Components
 	void IO_Flow_Synthetic::Execute_simulator_event(MQSimEngine::Sim_Event* event)
 	{
 #ifdef NEW_LOGGING
-		if (1 == event->Type)
+		if ((int)Io_Event_Type::IO_STAT == event->Type)
 		{
 			IO_Flow_Base::Execute_simulator_event(event);
 			return;
@@ -216,7 +216,9 @@ namespace Host_Components
 			}
 		}
 		else for (unsigned int i = 0; i < average_number_of_enqueued_requests; i++)
+		{
 			Submit_io_request(Generate_next_request());
+		}
 	}
 
 	void IO_Flow_Synthetic::Get_statistics(Utils::Workload_Statistics& stats, LPA_type(*Convert_host_logical_address_to_device_address)(LHA_type lha),

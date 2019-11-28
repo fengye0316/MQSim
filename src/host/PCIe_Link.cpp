@@ -13,6 +13,7 @@ namespace Host_Components
 		tlp_header_size(tlp_header_size), tlp_max_payload_size(tlp_max_payload_size), dllp_ovehread(dllp_ovehread), ph_overhead(ph_overhead)
 	{
 		packet_overhead = ph_overhead + dllp_ovehread + tlp_header_size;
+		PRINT_MESSAGE("PCIe Link bandwidth:"<<lane_bandwidth_GBPs<<"\t lane Count:"<<lane_count)
 	}
 
 	void PCIe_Link::Set_root_complex(PCIe_Root_Complex* root_complex)
@@ -69,8 +70,12 @@ namespace Host_Components
 			Message_buffer_toward_ssd_device.pop();
 			pcie_switch->Deliver_to_device(message);
 			if (Message_buffer_toward_ssd_device.size() > 0)
+			{
 				Simulator->Register_sim_event(Simulator->Time() + estimate_transfer_time(Message_buffer_toward_ssd_device.front()),
 					this, (void*)(intptr_t)PCIe_Destination_Type::DEVICE, static_cast<int>(PCIe_Link_Event_Type::DELIVER));
+				
+				//PRINT_MESSAGE("2 sim time:"<<Simulator->Time()<<"\t event time:"<<Simulator->Time() + estimate_transfer_time(Message_buffer_toward_ssd_device.front())<<"\tpayload:"<<message->Payload_size);
+			}
 			break;
 		}
 	}

@@ -355,6 +355,10 @@ namespace SSD_Components
 			read_transfer_info->Stream_id = user_request->Stream_id;
 			service_dram_access_request(read_transfer_info);
 		}
+		else
+		{
+			delete evicted_cache_slots;
+		}
 
 		if (dram_write_size_in_sectors)//Issue memory write to write data to DRAM
 		{
@@ -490,7 +494,9 @@ namespace SSD_Components
 						sim_time_type timestamp = slot.Timestamp;
 						NVM::memory_content_type content = slot.Content;
 						if (((NVM_Transaction_Flash_WR*)transaction)->DataTimeStamp >= timestamp)
+						{
 							((Data_Cache_Manager_Flash_Advanced*)_my_instance)->per_stream_cache[transaction->Stream_id]->Remove_slot(transaction->Stream_id, ((NVM_Transaction_Flash_WR*)transaction)->LPA);
+						}
 					}
 					
 					auto user_request = ((Data_Cache_Manager_Flash_Advanced*)_my_instance)->waiting_user_requests_queue_for_dram_free_slot[sharing_id].begin();

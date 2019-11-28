@@ -139,8 +139,8 @@ namespace Host_Components
 		uint32_t Get_write_request_enqueued_delay_short_term();//in microseconds
 		uint32_t Get_serviced_read_request_count_short_term(){return STAT_serviced_read_request_count_short_term;}
 		uint32_t Get_serviced_write_request_count_short_term(){return STAT_serviced_write_request_count_short_term;}
-		uint32_t Get_transferred_kbs_read_short_term(){return STAT_sum_transferred_bytes_read_short_term / 1024 / ((double)logging_period / SIM_TIME_TO_SECONDS_COEFF);}
-		uint32_t Get_transferred_kbs_write_short_term(){return STAT_sum_transferred_bytes_write_short_term / 1024 / ((double)logging_period / SIM_TIME_TO_SECONDS_COEFF);}
+		uint32_t Get_transferred_kbs_read_short_term(){return (uint32_t)(STAT_sum_transferred_bytes_read_short_term / 1024 / ((double)logging_period / SIM_TIME_TO_SECONDS_COEFF));}
+		uint32_t Get_transferred_kbs_write_short_term(){return (uint32_t)(STAT_sum_transferred_bytes_write_short_term / 1024 / ((double)logging_period / SIM_TIME_TO_SECONDS_COEFF));}
 		
 		sim_time_type STAT_sum_device_read_response_time_short_term, STAT_sum_device_write_response_time_short_term; //clat
 		sim_time_type STAT_sum_read_request_delay_short_term, STAT_sum_write_request_delay_short_term;   //lat
